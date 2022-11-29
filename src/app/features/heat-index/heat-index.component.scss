@@ -1,0 +1,47 @@
+.container {
+  height: 82vh;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.temperature-row {
+  display: flex;
+  margin-bottom: 5px;
+}
+.dropdown {
+  margin-left: 10px;
+}
+.humidity-row {
+  display: flex;
+}
+.buttons {
+  display: flex;
+  gap: 5px;
+  margin-top: 1em;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid grey;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.percent {
+  margin-left: -1.5em;
+}
+
+.temperature-input {
+  margin-right: 33px;
+}
+.humidity-input {
+  margin-right: 20px;
+}
+
+.about-heat-index {
+  margin-top: 20em;
+}

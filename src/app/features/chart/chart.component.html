@@ -1,0 +1,7 @@
+<div *ngIf="weatherDataLoading" class="load-container">
+  <div class="load-speeding-wheel"></div>
+</div>
+<h1 class="error-message" *ngIf="showError" >{{showError}}</h1>
+<div class="card">
+  <p-chart type="line" height="85vh" [data]="basicData" [options]="basicOptions"></p-chart>
+</div>
