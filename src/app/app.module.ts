@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { TabViewModule } from 'primeng/tabview';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
@@ -14,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { PaginatorModule } from 'primeng/paginator';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { TabMenuModule } from 'primeng/tabmenu';
 import { SliderModule } from 'primeng/slider';
 import { DatePipe } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -22,6 +22,8 @@ import { AppComponent } from './app.component';
 import { WeatherDataComponent } from './features/weather-data/weather-data.component';
 import { ChartComponent } from './features/chart/chart.component';
 import { HeatIndexComponent } from './features/heat-index/heat-index.component';
+import { AppRoutingModule } from './app-routing.module';
+import { PageNotFoundComponent } from './features/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -29,10 +31,10 @@ import { HeatIndexComponent } from './features/heat-index/heat-index.component';
     WeatherDataComponent,
     ChartComponent,
     HeatIndexComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
-    TabViewModule,
     ButtonModule,
     ChartModule,
     TableModule,
@@ -46,6 +48,8 @@ import { HeatIndexComponent } from './features/heat-index/heat-index.component';
     InputSwitchModule,
     PaginatorModule,
     ReactiveFormsModule,
+    TabMenuModule,
+    AppRoutingModule,
     MultiSelectModule,
     SliderModule,
   ],

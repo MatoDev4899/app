@@ -21,6 +21,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.weatherDataLoading = true;
     this.weatherService
       .getWeatherDataForChart()
       .pipe(
