@@ -1,3 +1,44 @@
-.icons fa-icon {
+.container {
+  height: 73vh;
+  position: relative;
+}
+.cols fa-icon {
   margin-right: 5px;
 }
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+.filters-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.filters-switch p {
+  margin-right: 10px;
+}
+.flex-filter {
+  display: flex;
+  justify-content: space-between;
+}
+.flex-filter span {
+  position: relative;
+}
+.flex-filter i {
+  position: absolute;
+  top: 10px;
+  left: 85%;
+}
+.filter-input {
+  height: 40px;
+}
+.cols span {
+  display: flex;
+  align-items: center;
+}
+ .slider-values {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ }

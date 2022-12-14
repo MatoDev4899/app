@@ -3,13 +3,7 @@ import { WeatherDataItem } from 'src/app/shared/models/WeatherDataItem.model';
 import { WeatherService } from 'src/app/core/services/weather.service';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import {
-  faTemperatureHigh,
-  faClock,
-  faPercent,
-  faWind,
-  faGem,
-} from '@fortawesome/free-solid-svg-icons';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-weather-data',
@@ -17,52 +11,72 @@ import {
   styleUrls: ['./weather-data.component.scss'],
 })
 export class WeatherDataComponent implements OnInit, OnDestroy {
-  showError: string;
+  filterSwitch = '';
+  errorMessage: string;
   weatherData: WeatherDataItem[] = [];
   private componentDestroyed$: Subject<boolean> = new Subject();
   weatherDataLoading: boolean;
-  temperatureIcon = faTemperatureHigh;
-  timeIcon = faClock;
-  humidityIcon = faPercent;
-  windIcon = faWind;
-  pressureIcon = faGem;
+  sliderValues: number[] = [0, 100];
+  filterFields: string[] = [
+    'time',
+    'temperature',
+    'humidity',
+    'wind',
+    'pressure',
+    'direction',
+    'precipitation.didRain',
+    'rain',
+    'cloudcover',
+    'soilTemperature',
+  ];
 
   constructor(private weatherService: WeatherService) {}
 
   ngOnInit(): void {
+    this.filterFields = [
+      'time',
+      'temperature',
+      'humidity',
+      'wind',
+      'pressure',
+      'direction',
+      'precipitation.didRain',
+      'rain',
+      'cloudcover',
+      'soilTemperature',
+    ];
     this.weatherDataLoading = true;
     this.weatherService
-      .getWeatherData()
+      .getWeatherDataForTable()
       .pipe(
         finalize(() => (this.weatherDataLoading = false)),
         takeUntil(this.componentDestroyed$)
       )
       .subscribe({
-        next: (historicalWeatherData) => {
-          const temperatures = historicalWeatherData.hourly.temperature_2m;
-          const times = historicalWeatherData.hourly.time;
-          const humidities =
-            historicalWeatherData.hourly.relativehumidity_2m || [];
-          const windSpeeds = historicalWeatherData.hourly.windspeed_10m || [];
-          const airPressures =
-            historicalWeatherData.hourly.surface_pressure || [];
-
-          temperatures.forEach((value, i) => {
-            this.weatherData.push(
-              new WeatherDataItem(
-                temperatures[i],
-                times[i],
-                humidities[i],
-                windSpeeds[i],
-                airPressures[i]
-              )
+        next: (historicalWeatherData: WeatherDataItem[]) => {
+          this.weatherData = historicalWeatherData;
+          this.weatherData.forEach((item: WeatherDataItem) => {
+            item.direction = this.weatherService.convertWindDirection(
+              parseFloat(item.direction)
             );
+            item.precipitation = Object.assign({
+              amount: item.precipitation,
+              didRain: item.precipitation > 0,
+            });
           });
         },
-        error: () =>
-          (this.showError =
-            'Something went wrong. Please try refreshing the page'),
+        error: (error: Error) => {
+          this.errorMessage = `${error.name}. Check your connection or try refreshing the page`;
+        },
       });
+  }
+
+  get windDirections(): Object[] {
+    return this.weatherService.windDirections;
+  }
+
+  clearFilters(table: Table): void {
+    table.clear();
   }
 
   ngOnDestroy(): void {

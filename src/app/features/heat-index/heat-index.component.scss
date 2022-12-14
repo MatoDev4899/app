@@ -1,5 +1,6 @@
 .container {
-  height: 82vh;
+  height: 78vh;
+  overflow:auto
 }
 .wrapper {
   display: flex;
@@ -9,39 +10,51 @@
   display: flex;
   margin-bottom: 5px;
 }
-.dropdown {
-  margin-left: 10px;
-}
 .humidity-row {
   display: flex;
 }
-.buttons {
+.inputWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.inputWrapper input {
+  height: 51px;
+}
+.inputWrapper small {
+  font-size: 12px;
+}
+.calculate-flex {
   display: flex;
   gap: 5px;
   margin-top: 1em;
 }
-
 table {
   width: 100%;
 }
-
 th, td {
   border: 1px solid grey;
   padding: 5px;
   font-size: 15px;
 }
-
-.percent {
-  margin-left: -1.5em;
+.unit {
+  position: absolute;
+  top: 15px;
+  left: 90%;
 }
-
-.temperature-input {
+.temperature-text {
   margin-right: 33px;
 }
-.humidity-input {
+.humidity-text {
   margin-right: 20px;
 }
-
-.about-heat-index {
-  margin-top: 20em;
-}
+ .effect {
+  text-align: center;
+ }
+ .history {
+  margin-top: 40px;
+  max-height: 100%;
+ }
+tr th {
+  text-align: center;
+ }

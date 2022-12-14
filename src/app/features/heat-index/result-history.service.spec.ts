@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HeatIndexService } from './heat-index.service';
-
-describe('HeatIndexService', () => {
-  let service: HeatIndexService;
+import { ResultHistoryService } from './result-history.service';
+describe('LocalStorageService', () => {
+  let service: ResultHistoryService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(HeatIndexService);
+    service = TestBed.inject(ResultHistoryService);
   });
 
   it('should be created', () => {
