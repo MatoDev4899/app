@@ -1,0 +1,17 @@
+.container {
+  height: 83vh;
+  background-color: #2a323d;
+ }
+
+ .grid {
+  color: white;
+  display: grid;
+  grid-template-columns: auto auto;
+  place-items: center;
+  min-height: 85vh;
+}
+
+button:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}

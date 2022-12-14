@@ -1,0 +1,5 @@
+<form class="user-input" [formGroup]="userInput">
+  <p-dropdown [options]="cities" formControlName="selectedCity" placeholder="Select a city" optionLabel="name"></p-dropdown>
+  <p> weather data for: </p>
+  <p-calendar [minDate]="minDate" [maxDate]="maxDate" dateFormat="dd/mm/yy" (onSelect)="onDateSelect()" class="calendar" placeholder="Select a date" formControlName="selectedDate"></p-calendar>
+</form>

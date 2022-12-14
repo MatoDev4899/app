@@ -1,0 +1,4 @@
+<div class="container">
+  <div class="grid">
+    <button *ngFor="let button of buttons" pButton type="button" routerLink="/weather-data" (click)="onCityButtonClick(button)">{{button.name}}</button>
+  </div>

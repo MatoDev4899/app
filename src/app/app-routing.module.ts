@@ -4,11 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './features/page-not-found/page-not-found.component';
 
 const appRoutes: Routes = [
-  {
-    path: '',
-    redirectTo: '/weather-data',
-    pathMatch: 'full',
-  },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
     path: 'weather-data',
     loadChildren: () =>
@@ -23,6 +19,11 @@ const appRoutes: Routes = [
     path: 'heat-index',
     loadChildren: () =>
       import('./modules/heat-index.module').then((m) => m.HeatIndexModule),
+  },
+  {
+    path: 'home',
+    loadChildren: () =>
+      import('./modules/home.module').then((m) => m.HomeModule),
   },
   {
     path: '**',

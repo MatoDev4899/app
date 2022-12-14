@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WeatherDataItem } from 'src/app/shared/models/WeatherDataItem.model';
 import { WeatherService } from 'src/app/core/services/weather.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { CoordinatesAndDates } from 'src/app/shared/models/CoordinatesAndDates.model';
+import { DatePipe } from '@angular/common';
+import { DateService } from 'src/app/core/services/date.service';
 
 @Component({
   selector: 'app-weather-data',
@@ -17,6 +20,8 @@ export class WeatherDataComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<boolean> = new Subject();
   weatherDataLoading: boolean;
   sliderValues: number[] = [0, 100];
+  haveData = false;
+  invalidDate: boolean;
   filterFields: string[] = [
     'time',
     'temperature',
@@ -30,24 +35,55 @@ export class WeatherDataComponent implements OnInit, OnDestroy {
     'soilTemperature',
   ];
 
-  constructor(private weatherService: WeatherService) {}
+  constructor(
+    private weatherService: WeatherService,
+    private datePipe: DatePipe,
+    private dateService: DateService
+  ) {}
 
   ngOnInit(): void {
-    this.filterFields = [
-      'time',
-      'temperature',
-      'humidity',
-      'wind',
-      'pressure',
-      'direction',
-      'precipitation.didRain',
-      'rain',
-      'cloudcover',
-      'soilTemperature',
-    ];
+    this.watchForCoordinatesAndDateChanges();
+  }
+
+  private watchForCoordinatesAndDateChanges(): void {
+    this.weatherService.coordinatesSubject
+      .asObservable()
+      .pipe(takeUntil(this.componentDestroyed$))
+      .subscribe({
+        next: (coordinatesAndDates: CoordinatesAndDates | null) => {
+          if (!coordinatesAndDates) {
+            return;
+          }
+          if (
+            coordinatesAndDates.startDate >
+              this.datePipe.transform(this.dateService.maxDate, 'yyyy-MM-dd') ||
+            coordinatesAndDates.startDate <
+              this.datePipe.transform(this.dateService.minDate, 'yyyy-MM-dd')
+          ) {
+            this.invalidDate = true;
+            this.haveData = true;
+          } else {
+            this.haveData = true;
+            this.invalidDate = false;
+            this.getWeatherData(coordinatesAndDates);
+          }
+        },
+      });
+  }
+
+  private getWeatherData(
+    coordinatesAndDates: CoordinatesAndDates | null
+  ): void {
     this.weatherDataLoading = true;
-    this.weatherService
-      .getWeatherDataForTable()
+    let weatherData$: Observable<WeatherDataItem[]>;
+    if (coordinatesAndDates) {
+      weatherData$ = this.weatherService.getWeatherDataForTable(
+        coordinatesAndDates.lat,
+        coordinatesAndDates.lon,
+        coordinatesAndDates.startDate
+      );
+    }
+    weatherData$
       .pipe(
         finalize(() => (this.weatherDataLoading = false)),
         takeUntil(this.componentDestroyed$)
@@ -59,10 +95,10 @@ export class WeatherDataComponent implements OnInit, OnDestroy {
             item.direction = this.weatherService.convertWindDirection(
               parseFloat(item.direction)
             );
-            item.precipitation = Object.assign({
+            item.precipitation = {
               amount: item.precipitation,
               didRain: item.precipitation > 0,
-            });
+            };
           });
         },
         error: (error: Error) => {

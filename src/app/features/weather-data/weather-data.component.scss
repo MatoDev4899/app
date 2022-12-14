@@ -1,5 +1,5 @@
 .container {
-  height: 73vh;
+  height: 77vh;
   position: relative;
 }
 .cols fa-icon {
@@ -42,3 +42,9 @@
   align-items: center;
   justify-content: space-between;
  }
+ .latest-data {
+  position: absolute;
+  bottom: 50%;
+  left: 34%;
+  z-index: 1;
+}

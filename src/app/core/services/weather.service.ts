@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { WeatherData } from 'src/app/shared/models/WeatherData.model';
 import { WeatherDataItem } from 'src/app/shared/models/WeatherDataItem.model';
 import { Dataset } from 'src/app/shared/models/Dataset.model';
 import { ChartData } from 'src/app/shared/models/ChartData.model';
 import { ChartLabel } from 'src/app/shared/models/ChartLabel.model';
+import { CoordinatesAndDates } from 'src/app/shared/models/CoordinatesAndDates.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,14 +25,25 @@ export class WeatherService {
 
   constructor(private http: HttpClient) {}
 
-  private getWeatherData(): Observable<WeatherData> {
+  coordinatesSubject: BehaviorSubject<CoordinatesAndDates | null> =
+    new BehaviorSubject<CoordinatesAndDates | null>(null);
+
+  private getWeatherData(
+    lat?: string,
+    lon?: string,
+    startDate?: string
+  ): Observable<WeatherData> {
     return this.http.get<WeatherData>(
-      'https://archive-api.open-meteo.com/v1/era5?latitude=51.51&longitude=-0.13&start_date=2005-08-25&end_date=2005-08-25&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,apparent_temperature,surface_pressure,precipitation,rain,cloudcover,windspeed_10m,winddirection_10m,soil_temperature_0_to_7cm&timezone=Europe%2FLondon'
+      `https://archive-api.open-meteo.com/v1/era5?latitude=${lat}&longitude=${lon}&start_date=${startDate}&end_date=${startDate}&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,apparent_temperature,surface_pressure,precipitation,rain,cloudcover,windspeed_10m,winddirection_10m,soil_temperature_0_to_7cm&timezone=Europe%2FLondon`
     );
   }
 
-  getWeatherDataForTable(): Observable<WeatherDataItem[]> {
-    return this.getWeatherData().pipe(
+  getWeatherDataForTable(
+    lat?: string,
+    lon?: string,
+    starDate?: string
+  ): Observable<WeatherDataItem[]> {
+    return this.getWeatherData(lat, lon, starDate).pipe(
       map((historicalWeatherData: WeatherData) => {
         const weatherData: WeatherDataItem[] = [];
         historicalWeatherData.hourly['temperature_2m'].forEach(
@@ -58,8 +70,12 @@ export class WeatherService {
     );
   }
 
-  getWeatherDataForChart(): Observable<ChartData> {
-    return this.getWeatherData().pipe(
+  getWeatherDataForChart(
+    lat?: string,
+    lon?: string,
+    startDate?: string
+  ): Observable<ChartData> {
+    return this.getWeatherData(lat, lon, startDate).pipe(
       map((historicalWeatherData: WeatherData) => {
         const data = historicalWeatherData.hourly['temperature_2m'].map(
           (value: string, i: number) => {

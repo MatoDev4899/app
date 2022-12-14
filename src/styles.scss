@@ -82,3 +82,15 @@ body {
     transform: rotate(360deg);
   }
 }
+.no-data {
+  position: absolute;
+  bottom: 40%;
+  left: 36%;
+  z-index: 1;
+}
+.invalid-data {
+  position: absolute;
+  bottom: 40%;
+  left: 30%;
+  z-index: 1;
+}

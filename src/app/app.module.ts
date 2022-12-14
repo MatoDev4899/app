@@ -13,17 +13,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { PaginatorModule } from 'primeng/paginator';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { RouterModule } from '@angular/router';
 import { SliderModule } from 'primeng/slider';
 import { DatePipe } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AppRoutingModule } from './app-routing.module';
+import { CalendarModule } from 'primeng/calendar';
 
 import { AppComponent } from './app.component';
 import { WeatherDataComponent } from './features/weather-data/weather-data.component';
 import { ChartComponent } from './features/chart/chart.component';
 import { HeatIndexComponent } from './features/heat-index/heat-index.component';
-import { AppRoutingModule } from './app-routing.module';
 import { PageNotFoundComponent } from './features/page-not-found/page-not-found.component';
+import { HomeComponent } from './features/home/home.component';
+import { UserInputComponent } from './features/user-input/user-input.component';
+import { WeatherService } from './core/services/weather.service';
 
 @NgModule({
   declarations: [
@@ -32,6 +36,8 @@ import { PageNotFoundComponent } from './features/page-not-found/page-not-found.
     ChartComponent,
     HeatIndexComponent,
     PageNotFoundComponent,
+    HomeComponent,
+    UserInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,12 +54,13 @@ import { PageNotFoundComponent } from './features/page-not-found/page-not-found.
     InputSwitchModule,
     PaginatorModule,
     ReactiveFormsModule,
-    TabMenuModule,
+    RouterModule,
     AppRoutingModule,
     MultiSelectModule,
     SliderModule,
+    CalendarModule,
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, WeatherService],
   bootstrap: [AppComponent],
 })
 export class AppModule {
