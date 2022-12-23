@@ -26,6 +26,7 @@ import { ChartComponent } from './features/chart/chart.component';
 import { HeatIndexComponent } from './features/heat-index/heat-index.component';
 import { PageNotFoundComponent } from './features/page-not-found/page-not-found.component';
 import { HomeComponent } from './features/home/home.component';
+import { AuthGuard } from './core/services/auth.guard';
 import { UserInputComponent } from './features/user-input/user-input.component';
 import { WeatherService } from './core/services/weather.service';
 
@@ -60,7 +61,7 @@ import { WeatherService } from './core/services/weather.service';
     SliderModule,
     CalendarModule,
   ],
-  providers: [DatePipe, WeatherService],
+  providers: [DatePipe, WeatherService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {

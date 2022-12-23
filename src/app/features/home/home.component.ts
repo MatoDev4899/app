@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { City } from 'src/app/shared/models/City.model';
 import * as L from 'leaflet';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/core/services/auth.guard';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   markers: [string, number, number][];
   private map: L.Map;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authGuard: AuthGuard) {}
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -67,6 +68,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         .bindTooltip(this.markers[i][0])
         .addTo(this.map)
         .on('click', (e: L.LeafletMouseEvent) => {
+          this.authGuard.isCitySelected = true;
           const marker: string = e.target._tooltip._content;
           const city: City = cities[marker];
           localStorage.setItem('city', JSON.stringify(city));
