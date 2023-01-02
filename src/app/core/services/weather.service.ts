@@ -31,19 +31,21 @@ export class WeatherService {
   private getWeatherData(
     lat?: string,
     lon?: string,
-    startDate?: string
-  ): Observable<WeatherData> {
+    startDate?: string,
+    endDate?: string
+  ) {
     return this.http.get<WeatherData>(
-      `https://archive-api.open-meteo.com/v1/era5?latitude=${lat}&longitude=${lon}&start_date=${startDate}&end_date=${startDate}&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,apparent_temperature,surface_pressure,precipitation,rain,cloudcover,windspeed_10m,winddirection_10m,soil_temperature_0_to_7cm&timezone=Europe%2FLondon`
+      `https://archive-api.open-meteo.com/v1/era5?latitude=${lat}&longitude=${lon}&start_date=${startDate}&end_date=${endDate}&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,apparent_temperature,surface_pressure,precipitation,rain,cloudcover,windspeed_10m,winddirection_10m,soil_temperature_0_to_7cm&timezone=Europe%2FLondon`
     );
   }
 
   getWeatherDataForTable(
     lat?: string,
     lon?: string,
-    starDate?: string
+    starDate?: string,
+    endDate?: string
   ): Observable<WeatherDataItem[]> {
-    return this.getWeatherData(lat, lon, starDate).pipe(
+    return this.getWeatherData(lat, lon, starDate, endDate).pipe(
       map((historicalWeatherData: WeatherData) => {
         const weatherData: WeatherDataItem[] = [];
         historicalWeatherData.hourly['temperature_2m'].forEach(
@@ -73,9 +75,10 @@ export class WeatherService {
   getWeatherDataForChart(
     lat?: string,
     lon?: string,
-    startDate?: string
+    startDate?: string,
+    endDate?: string
   ): Observable<ChartData> {
-    return this.getWeatherData(lat, lon, startDate).pipe(
+    return this.getWeatherData(lat, lon, startDate, endDate).pipe(
       map((historicalWeatherData: WeatherData) => {
         const data = historicalWeatherData.hourly['temperature_2m'].map(
           (value: string, i: number) => {

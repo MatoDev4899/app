@@ -27,12 +27,10 @@ export class UserInputComponent implements OnInit {
       new City('Tokyo', '35.69', '139.69'),
       new City('Bratislava', '48.15', '17.11'),
     ];
-
     this.userInput = new FormGroup({
-      selectedCity: new FormControl(null),
-      selectedDate: new FormControl(null),
+      selectedCity: new FormControl(new City('London', '51.51', '-0.13')),
+      selectedDates: new FormControl([]),
     });
-
     this.userInputService.setStoredCityAndDate(
       this.selectedCity,
       this.selectedDate
@@ -45,6 +43,22 @@ export class UserInputComponent implements OnInit {
     this.dateService.submitDates(this.userInput);
   }
 
+  onPreviousPeriodClick(): void {
+    this.dateService.previousPeriod(this.userInput);
+  }
+
+  onNextPeriodClick(): void {
+    this.dateService.nextPeriod(this.userInput);
+  }
+
+  get earliestDateLimit(): boolean {
+    return this.dateService.isEarliestDate;
+  }
+
+  get latestDateLimit(): boolean {
+    return this.dateService.isLatestDate;
+  }
+
   get minDate(): Date {
     return this.dateService.minDate;
   }
@@ -53,11 +67,11 @@ export class UserInputComponent implements OnInit {
     return this.dateService.maxDate;
   }
 
-  private get selectedDate(): AbstractControl {
-    return this.userInput.controls['selectedDate'];
+  get selectedDate(): AbstractControl {
+    return this.userInput.controls['selectedDates'];
   }
 
-  private get selectedCity(): AbstractControl {
+  get selectedCity(): AbstractControl {
     return this.userInput.controls['selectedCity'];
   }
 }

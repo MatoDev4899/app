@@ -11,7 +11,8 @@ import { City } from 'src/app/shared/models/City.model';
 export class DateService {
   maxDate: Date = new Date();
   minDate: Date = new Date();
-
+  isLatestDate: boolean;
+  isEarliestDate: boolean;
   constructor(
     private weatherService: WeatherService,
     private datePipe: DatePipe,
@@ -23,29 +24,86 @@ export class DateService {
 
   watchForStoredDate(): void {
     const cityString: string = localStorage.getItem('city');
-    const startDate: string = sessionStorage.getItem('date');
+    const startDate: string = sessionStorage.getItem('startDate');
+    const endDate: string = sessionStorage.getItem('endDate');
     const city: City = JSON.parse(cityString);
-    if (!city) {
-      return;
-    }
     const lat: string = city.lat.toString();
     const lon: string = city.lon.toString();
-    if (startDate !== null) {
+    if (startDate !== null || endDate !== null) {
       this.weatherService.coordinatesSubject.next({
         lat: lat,
         lon: lon,
         startDate: startDate,
+        endDate: endDate,
       });
+    } else {
+      this.weatherService.coordinatesSubject.next(null);
     }
+  }
+
+  previousPeriod(form: FormGroup): void {
+    this.isLatestDate = false;
+    const lat: string = form.controls['selectedCity'].value.lat;
+    const lon: string = form.controls['selectedCity'].value.lon;
+    const selectedDates: Date = form.controls['selectedDates'].value;
+    let startDate: Date = selectedDates[0];
+    let endDate: Date = selectedDates[1];
+    const rangeInDays: number =
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+    startDate = new Date(startDate.setDate(startDate.getDate() - rangeInDays));
+    endDate = new Date(endDate.setDate(endDate.getDate() - rangeInDays));
+    if (startDate < this.minDate || endDate < this.minDate) {
+      this.isEarliestDate = true;
+      return;
+    }
+    form.controls['selectedDates'].setValue([startDate, endDate]);
+    this.weatherService.coordinatesSubject.next({
+      lat: lat,
+      lon: lon,
+      startDate: this.datePipe.transform(startDate, 'yyyy-MM-dd'),
+      endDate: this.datePipe.transform(endDate, 'yyyy-MM-dd'),
+    });
+  }
+
+  nextPeriod(form: FormGroup): void {
+    this.isEarliestDate = false;
+    const lat: string = form.controls['selectedCity'].value.lat;
+    const lon: string = form.controls['selectedCity'].value.lon;
+    const selectedDates: Date = form.controls['selectedDates'].value;
+    let startDate: Date = selectedDates[0];
+    let endDate: Date = selectedDates[1];
+    const rangeInDays: number =
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+    startDate = new Date(startDate.setDate(startDate.getDate() + rangeInDays));
+    endDate = new Date(endDate.setDate(endDate.getDate() + rangeInDays));
+    if (startDate > this.maxDate || endDate > this.maxDate) {
+      this.isLatestDate = true;
+      return;
+    }
+    form.controls['selectedDates'].setValue([startDate, endDate]);
+    this.weatherService.coordinatesSubject.next({
+      lat: lat,
+      lon: lon,
+      startDate: this.datePipe.transform(startDate, 'yyyy-MM-dd'),
+      endDate: this.datePipe.transform(endDate, 'yyyy-MM-dd'),
+    });
   }
 
   submitDates(form: FormGroup): void {
     const startDate: string = this.datePipe.transform(
-      form.controls['selectedDate'].value,
+      form.controls['selectedDates'].value[0],
       'yyyy-MM-dd'
     );
-    sessionStorage.setItem('date', startDate);
-    if (!form.controls['selectedCity'].value) {
+    const endDate: string = this.datePipe.transform(
+      form.controls['selectedDates'].value[1],
+      'yyyy-MM-dd'
+    );
+    sessionStorage.setItem('startDate', startDate);
+    sessionStorage.setItem('endDate', endDate);
+    if (
+      !form.controls['selectedCity'].value ||
+      !form.controls['selectedDates'].value[1]
+    ) {
       return;
     }
     if (this.router.url === '/weather-data') {
@@ -53,6 +111,8 @@ export class DateService {
     } else {
       this.refreshRoute('/chart');
     }
+    this.isLatestDate = false;
+    this.isEarliestDate = false;
     const lat: string = form.controls['selectedCity'].value.lat;
     const lon: string = form.controls['selectedCity'].value.lon;
     localStorage.setItem(
@@ -63,6 +123,7 @@ export class DateService {
       lat: lat,
       lon: lon,
       startDate: startDate,
+      endDate: endDate,
     });
   }
 

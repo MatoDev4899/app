@@ -19,6 +19,7 @@ import { DatePipe } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from './app-routing.module';
 import { CalendarModule } from 'primeng/calendar';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { AppComponent } from './app.component';
 import { WeatherDataComponent } from './features/weather-data/weather-data.component';
@@ -60,6 +61,7 @@ import { WeatherService } from './core/services/weather.service';
     MultiSelectModule,
     SliderModule,
     CalendarModule,
+    TooltipModule,
   ],
   providers: [DatePipe, WeatherService, AuthGuard],
   bootstrap: [AppComponent],

@@ -58,7 +58,9 @@ export class WeatherDataComponent implements OnInit, OnDestroy {
             coordinatesAndDates.startDate >
               this.datePipe.transform(this.dateService.maxDate, 'yyyy-MM-dd') ||
             coordinatesAndDates.startDate <
-              this.datePipe.transform(this.dateService.minDate, 'yyyy-MM-dd')
+              this.datePipe.transform(this.dateService.minDate, 'yyyy-MM-dd') ||
+            coordinatesAndDates.endDate >
+              this.datePipe.transform(this.dateService.maxDate, 'yyyy-MM-dd')
           ) {
             this.invalidDate = true;
             this.haveData = true;
@@ -80,7 +82,8 @@ export class WeatherDataComponent implements OnInit, OnDestroy {
       weatherData$ = this.weatherService.getWeatherDataForTable(
         coordinatesAndDates.lat,
         coordinatesAndDates.lon,
-        coordinatesAndDates.startDate
+        coordinatesAndDates.startDate,
+        coordinatesAndDates.endDate
       );
     }
     weatherData$
